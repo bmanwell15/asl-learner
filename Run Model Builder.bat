@@ -1,3 +1,2 @@
-.\Python38\python.exe .\PyFiles\trainModel.py
-
+.\Python38\python.exe ".\PyFiles\trainModel.py"
 pause

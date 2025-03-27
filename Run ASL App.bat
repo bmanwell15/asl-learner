@@ -1,1 +1,2 @@
-.\Python38\python.exe .\PyFiles\app.py
+.\Python38\python.exe .\App\main.py
+pause

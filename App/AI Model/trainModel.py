@@ -5,7 +5,7 @@ import pickle
 import os
 
 # Load data
-with open("./AI Model/asl_data.pkl", "rb") as f:
+with open("./asl_data.pkl", "rb") as f:
     data = pickle.load(f)
 
 # Prepare dataset
@@ -24,8 +24,8 @@ y = np.array(y)
 y = tf.keras.utils.to_categorical(y, num_classes=len(labels))
 
 # Define the model
-if os.path.exists("./AI Model/asl_model.h5"):
-    model = tf.keras.models.load_model('./AI Model/asl_model.h5')
+if os.path.exists("./asl_model.h5"):
+    model = tf.keras.models.load_model('./asl_model.h5')
     print("MODEL LOADED...")
 else:
     model = tf.keras.Sequential([
@@ -57,6 +57,6 @@ model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accur
 model.fit(x, y, epochs=50, batch_size=16, validation_split=0.3)
 
 # Save the model and labels
-model.save("./AI Model/asl_model.h5")
-with open("./AI Model/labels.pkl", "wb") as f:
+model.save("./asl_model.h5")
+with open("./labels.pkl", "wb") as f:
     pickle.dump(labels, f)

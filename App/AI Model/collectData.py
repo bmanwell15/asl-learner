@@ -48,5 +48,5 @@ cap.release()
 cv2.destroyAllWindows()
 
 # Save collected data
-with open("./AI Model/asl_data.pkl", "wb") as f:
+with open("./asl_data.pkl", "wb") as f:
     pickle.dump(data, f)
