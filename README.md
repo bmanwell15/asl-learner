@@ -35,17 +35,17 @@ The `HandRecognizer` class preforms operations with the AI model to detct and re
     - This class has no public attributes
 
 #### Methods:
-    - `openCamara() -> None`
-    Turns on the camara for the AI Model to view.
+- `openCamara() -> None`
+Turns on the camara for the AI Model to view.
 
-    - `closeCamara() -> None`
-    Turns off the camara.
+- `closeCamara() -> None`
+Turns off the camara.
 
-    - `getCurrentHandSymbol() -> str | None`
-    Opens the camara if it is not opened already and views what symbol the user is making with their hands. If no *hand* is found, `None` is returned. Otherwise, the symbol detected is returned.
+- `getCurrentHandSymbol() -> str | None`
+Opens the camara if it is not opened already and views what symbol the user is making with their hands. If no *hand* is found, `None` is returned. Otherwise, the symbol detected is returned.
 
-    - `waitUntilHandSymbol(symbol: str) -> str`
-    Blocks the script until the specified symbol is detected. The method then returns the specified symbol. Be careful in that if the symbol is not something the model was trained on, then the scripted will be blocked forever. There may be a time where we add a timeout functionality to it.
+- `waitUntilHandSymbol(symbol: str) -> str`
+Blocks the script until the specified symbol is detected. The method then returns the specified symbol. Be careful in that if the symbol is not something the model was trained on, then the scripted will be blocked forever. There may be a time where we add a timeout functionality to it.
 
 
 
