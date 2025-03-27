@@ -32,7 +32,7 @@ The `HandRecognizer` class preforms operations with the AI model to detct and re
 - Location: HandRecognizer.py
 
 #### Attributes:
-    - This class has no public attributes
+- This class has no public attributes
 
 #### Methods:
 - `openCamara() -> None`
