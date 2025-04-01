@@ -10,8 +10,4 @@ def main():
         print(handRecognizer.getCurrentHandSymbol())
 
 
-
-try:
-    main()
-except Exception:
-    traceback.print_exc()
+main()

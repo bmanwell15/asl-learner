@@ -30,13 +30,20 @@ while cap.isOpened():
         for hand_landmarks in results.multi_hand_landmarks:
             mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
 
-            landmarks = np.array([[lm.x, lm.y, lm.z] for lm in hand_landmarks.landmark]).flatten()
+            # Convert landmarks to a NumPy array
+            landmarks = np.array([[lm.x, lm.y, lm.z] for lm in hand_landmarks.landmark])  # No flatten()
 
-            for i in range(len(landmarks)):
-                landmarks[i] -= landmarks[4] # landmarks[4] being the left most point in a right hand (tip of thumb)
-                landmarks[i] = abs(landmarks[i])
+            # Normalize: Translate so wrist (index 0) is at (0,0,0)
+            landmarks -= landmarks[0]
+
+            # Compute max distance from wrist (fixing the previous error)
+            max_dist = np.max(np.linalg.norm(landmarks, axis=1))  # axis=1 now works
+
+            if max_dist > 0:  # Avoid division by zero
+                landmarks /= max_dist  # Scale the landmarks
+
                 
-
+            landmarks = landmarks.flatten()
             if len(landmarks) == 63:
                 data[labels[current_label]].append(landmarks)
 
