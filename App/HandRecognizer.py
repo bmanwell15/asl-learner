@@ -46,7 +46,7 @@ class HandRecognizer:
         results = self.hands.process(rgbFrame)
         
         if results.multi_hand_landmarks:
-            for handLandmarks in results.multi_hand_landmarks:
+            for handLandmarks, handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
                 self.mpDrawing.draw_landmarks(frame, handLandmarks, self.mpHands.HAND_CONNECTIONS)
                 landmarks = np.array([[lm.x, lm.y, lm.z] for lm in handLandmarks.landmark])
 
@@ -54,8 +54,10 @@ class HandRecognizer:
                 max_dist = np.linalg.norm(landmarks, axis=1).max()  # Compute max distance
                 landmarks /= max_dist  # Normalize landmarks
 
+                if handedness.classification[0].label == "Left":
+                    landmarks[:, 0] *= -1  # Flip x-axis to make it represented as a right hand
+
                 landmarks = landmarks.flatten()
-                
                 if len(landmarks) == 63: # If full hand is in the video frame
                     landmarks = np.expand_dims(landmarks, axis=0)
                     prediction = self.model.predict(landmarks, verbose=0) # verbose=0 makes it not print a progress bar when predicting

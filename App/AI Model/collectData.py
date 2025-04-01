@@ -27,21 +27,20 @@ while cap.isOpened():
     results = hands.process(rgb_frame)
 
     if results.multi_hand_landmarks:
-        for hand_landmarks in results.multi_hand_landmarks:
+        for hand_landmarks, handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
             mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
 
             # Convert landmarks to a NumPy array
-            landmarks = np.array([[lm.x, lm.y, lm.z] for lm in hand_landmarks.landmark])  # No flatten()
+            landmarks = np.array([[lm.x, lm.y, lm.z] for lm in hand_landmarks.landmark])
 
             # Normalize: Translate so wrist (index 0) is at (0,0,0)
             landmarks -= landmarks[0]
-
-            # Compute max distance from wrist (fixing the previous error)
-            max_dist = np.max(np.linalg.norm(landmarks, axis=1))  # axis=1 now works
-
+            max_dist = np.max(np.linalg.norm(landmarks, axis=1))  # Compute max distance from wrist (fixing the previous error)
             if max_dist > 0:  # Avoid division by zero
                 landmarks /= max_dist  # Scale the landmarks
-
+            
+            if handedness.classification[0].label == "Left":
+                landmarks[:, 0] *= -1  # Flip x-axis to make it represented as a right hand
                 
             landmarks = landmarks.flatten()
             if len(landmarks) == 63:
