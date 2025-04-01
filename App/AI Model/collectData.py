@@ -9,7 +9,7 @@ mp_drawing = mp.solutions.drawing_utils
 hands = mp_hands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.7)
 
 # Labels for ASL gestures
-labels = ["A", "B", "C", "D", "E", "-"]
+labels = ["A", "B", "C", "-"]
 data = {label: [] for label in labels}
 
 cap = cv2.VideoCapture(0)
@@ -48,5 +48,5 @@ cap.release()
 cv2.destroyAllWindows()
 
 # Save collected data
-with open("./asl_data.pkl", "wb") as f:
+with open("./App/AI Model/asl_data.pkl", "wb") as f:
     pickle.dump(data, f)

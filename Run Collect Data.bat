@@ -1,1 +1,1 @@
-.\Python38\python.exe ".\AI Model\collectData.py"
+.\Python38\python.exe ".\App\AI Model\collectData.py"
