@@ -15,7 +15,7 @@ data = {label: [] for label in labels}
 cap = cv2.VideoCapture(0)
 
 current_label = 0
-print("Press [n] to switch to the next label. Press [q] to quit.")
+print("Press space to switch to the next label. Press [q] to quit.")
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -31,6 +31,12 @@ while cap.isOpened():
             mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
 
             landmarks = np.array([[lm.x, lm.y, lm.z] for lm in hand_landmarks.landmark]).flatten()
+
+            for i in range(len(landmarks)):
+                landmarks[i] -= landmarks[4] # landmarks[4] being the left most point in a right hand (tip of thumb)
+                landmarks[i] = abs(landmarks[i])
+                
+
             if len(landmarks) == 63:
                 data[labels[current_label]].append(landmarks)
 
@@ -38,7 +44,7 @@ while cap.isOpened():
     cv2.imshow("Data Collection", frame)
 
     key = cv2.waitKey(1)
-    if key == ord('n'):
+    if key == ord(' '):
         current_label = (current_label + 1) % len(labels)
         print(f"Switched to {labels[current_label]}")
     elif key == ord('q'):

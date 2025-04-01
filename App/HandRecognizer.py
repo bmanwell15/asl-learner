@@ -49,6 +49,10 @@ class HandRecognizer:
             for handLandmarks in results.multi_hand_landmarks:
                 self.mpDrawing.draw_landmarks(frame, handLandmarks, self.mpHands.HAND_CONNECTIONS)
                 landmarks = np.array([[lm.x, lm.y, lm.z] for lm in handLandmarks.landmark]).flatten()
+
+                for i in range(len(landmarks)):
+                    landmarks[i] -= landmarks[4] # landmarks[4] being the left most point in a right hand (tip of thumb)
+                    landmarks[i] = abs(landmarks[i])
                 
                 if len(landmarks) == 63: # If full hand is in the video frame
                     landmarks = np.expand_dims(landmarks, axis=0)
