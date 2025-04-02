@@ -1,39 +1,43 @@
+from tensorflow.keras.models import load_model
+from pickle import load as pickleLoad
 import cv2
 import mediapipe as mp
 import numpy as np
-import tensorflow as tf
-import pickle
-
 
 
 class HandRecognizer:
+    VERSION = "1.0.0" # Use this to keep track of the AI model version throughout different branches
     _MODEL_PATH = "./App/AI Model/asl_model.h5"
     _LABELS_PATH = "./App/AI Model/labels.pkl"
 
     def __init__(self):
         # Load trained model
-        self.model = tf.keras.models.load_model(HandRecognizer._MODEL_PATH)
+        self.model = load_model(HandRecognizer._MODEL_PATH)
         with open(HandRecognizer._LABELS_PATH, "rb") as f:
-            self.labels = pickle.load(f)
+            self.labels = pickleLoad(f)
 
+        # Initilaze Mediapipe hand tracking
         self.mpHands = mp.solutions.hands
         self.mpDrawing = mp.solutions.drawing_utils
         self.hands = self.mpHands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.7)
 
-        self.isCamaraOpen = False # Set to false so that way openCamara() can set it to true
+        self.isCamaraOpen = False # Set to false that way openCamara() can set it to true
         self.openCamara()
     
     def openCamara(self) -> None:
+        """ Opens the camara for the AI Model to view. """
         if not self.isCamaraOpen:
             self.camaraCapture = cv2.VideoCapture(0)
             self.isCamaraOpen = True
     
     def closeCamara(self) -> None:
+        """ Closes the camara for the AI Model to view. """
         if self.isCamaraOpen:
             self.camaraCapture.release()
             self.isCamaraOpen = False
     
     def getCurrentHandSymbol(self) -> str:
+        """ Returns a string containing the label for the hand symbol that is currently being displayed. If no hand is found on screen `None` is returned. """
         if not self.isCamaraOpen:
             self.openCamara()
 
@@ -47,7 +51,7 @@ class HandRecognizer:
         
         if results.multi_hand_landmarks:
             for handLandmarks, handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
-                self.mpDrawing.draw_landmarks(frame, handLandmarks, self.mpHands.HAND_CONNECTIONS)
+                #self.mpDrawing.draw_landmarks(frame, handLandmarks, self.mpHands.HAND_CONNECTIONS)
                 landmarks = np.array([[lm.x, lm.y, lm.z] for lm in handLandmarks.landmark])
 
                 landmarks -= landmarks[0]  # Translate to make the wrist the reference point
@@ -69,6 +73,7 @@ class HandRecognizer:
         return None
     
     def waitUntilHandSymbol(self, symbol: str) -> str:
+        """ Blocks the script until the specified symbol is found. WARNING: As of now, there is not a timeout, so be very careful with the symbol that is imputted. If the symbol doesn't exist in the model, the script is blocked forever. """
         lastHandSignal = self.getCurrentHandSymbol()
         while lastHandSignal != symbol:
             lastHandSignal = self.getCurrentHandSymbol()

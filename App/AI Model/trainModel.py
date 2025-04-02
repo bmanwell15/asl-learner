@@ -1,12 +1,16 @@
-#from tensorflow.keras.preprocessing.image import ImageDataGenerator
-import tensorflow as tf
-import numpy as np
-import pickle
-import os
+print("Importing libraries...")
+from pickle import load as pickleLoad, dump as pickleDump
+from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras import Sequential
+from tensorflow.keras.models import load_model
+from tensorflow.keras.utils import to_categorical
+from numpy import array
+from os.path import exists
 
+print("Preparing data...")
 # Load data
 with open("./App/AI Model/asl_data.pkl", "rb") as f:
-    data = pickle.load(f)
+    data = pickleLoad(f)
 
 # Prepare dataset
 x = []
@@ -17,24 +21,24 @@ for label, samples in data.items():
     x.extend(samples)
     y.extend([labels.index(label)] * len(samples))
 
-x = np.array(x)
-y = np.array(y)
+x = array(x)
+y = array(y)
 
 # One-hot encode labels
-y = tf.keras.utils.to_categorical(y, num_classes=len(labels))
+y = to_categorical(y, num_classes=len(labels))
 
 # Define the model
-if os.path.exists("./App/AI Model/asl_model.h5"):
-    model = tf.keras.models.load_model('./App/AI Model/asl_model.h5')
+if exists("./App/AI Model/asl_model.h5"):
+    model = load_model('./App/AI Model/asl_model.h5')
     print("MODEL LOADED...")
 else:
-    model = tf.keras.Sequential([
-        tf.keras.layers.Dense(128, activation='relu', input_shape=(63,)),  # 63 input features (flattened landmarks)
-        tf.keras.layers.Dropout(0.5),
-        tf.keras.layers.Dense(128, activation='relu'),
-        tf.keras.layers.Dropout(0.5),
-        tf.keras.layers.Dense(64, activation='relu'),
-        tf.keras.layers.Dense(len(labels), activation='softmax')
+    model = Sequential([
+        Dense(128, activation='relu', input_shape=(63,)),  # 63 input features (flattened landmarks)
+        Dropout(0.5),
+        Dense(128, activation='relu'),
+        Dropout(0.5),
+        Dense(64, activation='relu'),
+        Dense(len(labels), activation='softmax')
     ])
 
 model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
@@ -45,6 +49,7 @@ model.fit(x, y, epochs=50, batch_size=16, validation_split=0.3)
 # Save the model and labels
 model.save("./App/AI Model/asl_model.h5")
 with open("./App/AI Model/labels.pkl", "wb") as f:
-    pickle.dump(labels, f)
+    pickleDump(labels, f)
 
+print("\n\n\n\n")
 model.summary()

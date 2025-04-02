@@ -5,11 +5,7 @@ Using AI models to teach ASL symbols
 ## Setup
 
 ### Installing the Correct Python Version
-The AI Model for this app using Tensorflow and Mediapipe. Because Mediapipe only works for a selected version of python, this project will use Python Version 3.8.10. Instead of uninstalling the user's current version of python and downgrading it, we will add the correct version into the project itself.
-
-Go [here](https://drive.google.com/file/d/1jR_6IgCg9QYbhDemzOZb53dwFak4_fEJ/view?usp=sharing) to download the correct python version. Be sure to unzip it into the root of the project directory.
-
-`.bat` files were added to show examples on how to run the scripts with the correct python version. Note that even though the scripts will only run for Windows, the contents of the files can be copied and pasted into a MAC teminal.
+The AI Model for this app using Tensorflow and Mediapipe. Because Mediapipe only works for a selected version of python, **this project will use Python Version 3.8.10**. Instead of uninstalling the user's current version of python and downgrading it, we will add the correct version into the project itself.
 
 ### About Each Directory and File
 

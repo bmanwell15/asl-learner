@@ -1,5 +1,4 @@
 from HandRecognizer import HandRecognizer
-import traceback
 
 def main():
     handRecognizer = HandRecognizer()
