@@ -12,6 +12,11 @@ class HandRecognizer:
     def __init__(self):
         self._MODEL_PATH = os.path.join("App", "AI Model", "asl_model.h5")
         self._LABELS_PATH = os.path.join("App", "AI Model", "labels.pkl")
+
+        #TO RUN ON MAC, USE THESE 3 LINES INSTEAD
+        #base_dir = os.path.dirname(os.path.abspath(__file__))
+        #self._MODEL_PATH = os.path.join(base_dir, "AI Model", "asl_model.h5")
+        #self._LABELS_PATH = os.path.join(base_dir, "AI Model", "labels.pkl")
         # Load trained model
         self.model = load_model(self._MODEL_PATH)
         with open(self._LABELS_PATH, "rb") as f:
