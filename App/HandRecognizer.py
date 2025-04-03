@@ -36,17 +36,22 @@ class HandRecognizer:
             self.camaraCapture.release()
             self.isCamaraOpen = False
     
-    def getCurrentHandSymbol(self) -> str:
-        """ Returns a string containing the label for the hand symbol that is currently being displayed. If no hand is found on screen `None` is returned. """
-        if not self.isCamaraOpen:
-            self.openCamara()
-
+    def getFrame(self):
+        """Returns the frame of the camara in RGB format"""
         ret, frame = self.camaraCapture.read()
         if not ret:
             raise RuntimeError("ret not defined!")
     
         frame = cv2.flip(frame, 1) # Frame of the camara
         rgbFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) # Frame in RGB color format
+        return rgbFrame
+    
+    def getCurrentHandSymbol(self) -> str:
+        """ Returns a string containing the label for the hand symbol that is currently being displayed. If no hand is found on screen `None` is returned. """
+        if not self.isCamaraOpen:
+            self.openCamara()
+
+        rgbFrame = self.getFrame()
         results = self.hands.process(rgbFrame)
         
         if results.multi_hand_landmarks:
