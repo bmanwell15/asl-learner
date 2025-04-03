@@ -104,6 +104,7 @@ class NautilusUI(QWidget):
                     padding-left: 20px;
                 }
             """)
+            btn.clicked.connect(self.launch_lesson)
         else:
             btn.setStyleSheet("""
                 QPushButton {
@@ -118,6 +119,10 @@ class NautilusUI(QWidget):
 
         btn_layout.addWidget(btn)
         return btn_layout
+    def launch_lesson(self):
+        self.hide()
+        self.learner_window = ASLLearner()
+        self.learner_window.show()
 
 
 if __name__ == "__main__":

@@ -19,7 +19,7 @@ class ASLLearner(QMainWindow):
 
         self.lesson_pages = []
         for letter in self.letters:
-            page = LetterPage(letter, self.recognizer, self.next_letter)
+            page = LetterPage(letter, self.recognizer, on_back=self.return_home, on_success=self.next_letter)
             self.stack.addWidget(page)
             self.lesson_pages.append(page)
 
