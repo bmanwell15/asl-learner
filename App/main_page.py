@@ -83,13 +83,13 @@ class NautilusUI(QWidget):
         layout.addWidget(title)
 
         # Lesson buttons
-        layout.addWidget(self.make_lesson_button("lesson 1", enabled=True, handler=self.start_lesson))
+        layout.addLayout(self.make_lesson_button("lesson 1", enabled=True))
         for i in range(2, 6):
-            layout.addWidget(self.make_lesson_button(f"lesson {i}", enabled=False, handler=self.start_lesson))
+            layout.addLayout(self.make_lesson_button(f"lesson {i}", enabled=False))
 
-
-    def make_lesson_button(self, label, enabled=False, handler=None):
-        btn = QPushButton(f"  {'✨' if enabled else '🔒'}  {label}")
+    def make_lesson_button(self, label, enabled=False):
+        btn_layout = QHBoxLayout()
+        btn = QPushButton(f"  🔒  {label}")
         btn.setFixedHeight(50)
         btn.setFont(QFont("Arial", 14))
         btn.setCursor(Qt.PointingHandCursor)
@@ -104,8 +104,6 @@ class NautilusUI(QWidget):
                     padding-left: 20px;
                 }
             """)
-            if handler:  #Connect button to the handler if provided
-                btn.clicked.connect(handler)
         else:
             btn.setStyleSheet("""
                 QPushButton {
@@ -118,13 +116,8 @@ class NautilusUI(QWidget):
             """)
             btn.setEnabled(False)
 
-        return btn
-    
-    def start_lesson(self):
-        print("Lesson 1 button clicked!")
-        self.lesson_window = ASLLearner()
-        self.lesson_window.show()
-        self.close()
+        btn_layout.addWidget(btn)
+        return btn_layout
 
 
 if __name__ == "__main__":

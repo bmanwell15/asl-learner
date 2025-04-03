@@ -3,17 +3,18 @@ from pickle import load as pickleLoad
 import cv2
 import mediapipe as mp
 import numpy as np
+import os
 
 
 class HandRecognizer:
     VERSION = "1.0.0" # Use this to keep track of the AI model version throughout different branches
-    _MODEL_PATH = "./App/AI Model/asl_model.h5"
-    _LABELS_PATH = "./App/AI Model/labels.pkl"
 
     def __init__(self):
+        self._MODEL_PATH = os.path.join("App", "AI Model", "asl_model.h5")
+        self._LABELS_PATH = os.path.join("App", "AI Model", "labels.pkl")
         # Load trained model
-        self.model = load_model(HandRecognizer._MODEL_PATH)
-        with open(HandRecognizer._LABELS_PATH, "rb") as f:
+        self.model = load_model(self._MODEL_PATH)
+        with open(self._LABELS_PATH, "rb") as f:
             self.labels = pickleLoad(f)
 
         # Initilaze Mediapipe hand tracking
