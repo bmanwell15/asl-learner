@@ -25,14 +25,14 @@ class LetterPage(QWidget):
 
         # Add camera widget as base layer
         self.camera_widget = CameraWidget(self, self.recognizer)
-        self.camera_widget.setMinimumSize(800, 800)  # fill area
+        self.camera_widget.setFixedSize(360, 640)  # fill area
         layout.addWidget(self.camera_widget)
 
         # Overlay container (floats on top)
         overlay = QWidget(self)
         overlay.setAttribute(Qt.WA_TransparentForMouseEvents)  # allow interactions to pass through
         overlay.setStyleSheet("background: transparent;")
-        overlay.setGeometry(0, 0, 800, 800)  # same as window size
+        overlay.setGeometry(0, 0, 360, 640)  # same as window size
 
         overlay_layout = QVBoxLayout(overlay)
         overlay_layout.setContentsMargins(20, 20, 20, 20)

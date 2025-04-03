@@ -7,7 +7,7 @@ class ASLLearner(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("ASL Learner")
-        self.setMinimumSize(800, 800)
+        self.setFixedSize(360, 640)
 
         self.stack = QStackedWidget()
         self.setCentralWidget(self.stack)
