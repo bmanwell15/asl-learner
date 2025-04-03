@@ -63,7 +63,7 @@ class LessonPage(QWidget):
     def start_camera(self):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_frame)
-        self.timer.start(30)
+        self.timer.start(500)
 
     def update_frame(self):
         if not self.handRecognizer.isCamaraOpen:
@@ -95,14 +95,24 @@ class LessonPage(QWidget):
             # Correct
             self.letter_label.setStyleSheet("color: green; background: transparent;")
             #self.sign_img.setStyleSheet("border: none; background: transparent;")
-            
+            self.timer.stop()
+            QTimer.singleShot(1500, self.next_letter)
         
         else:
             # Incorrect or nothing detected
             self.letter_label.setStyleSheet("color: black; background: transparent;")
             # self.sign_img.setStyleSheet("border: none; background: transparent;")
    
-   
+    def next_letter(self):
+        self.index += 1
+        if self.index < len(self.lesson_letters):
+            self.target_symbol = self.lesson_letters[self.index]
+            self.letter_label.setText(self.target_symbol)
+            self.letter_label.setStyleSheet("color: black; background: transparent;")
+            self.timer.start(500)
+        else:
+            self.close()
+            
     def closeEvent(self, event):
         self.handRecognizer.closeCamara()
         self.timer.stop()
