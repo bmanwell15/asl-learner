@@ -1,12 +1,13 @@
 import sys
 import os
+import random
 from PySide6.QtWidgets import (
     QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout,
     QSizePolicy, QSpacerItem
 )
 from PySide6.QtGui import QPixmap, QFont
 from PySide6.QtCore import Qt
-from components.MainWindow import ASLLearner
+from lesson_page import LessonPage
 
 class NautilusUI(QWidget):
     def __init__(self):
@@ -82,14 +83,20 @@ class NautilusUI(QWidget):
         """)
         layout.addWidget(title)
 
+        
         # Lesson buttons
-        layout.addWidget(self.make_lesson_button("lesson 1", enabled=True, handler=self.start_lesson))
+        lesson1_layout, lesson1_btn = self.make_lesson_button("lesson 1", enabled=True)
+        layout.addLayout(lesson1_layout)
+
+        if lesson1_btn:
+            lesson1_btn.clicked.connect(self.open_lesson1)  #  Link to the lesson window
+
         for i in range(2, 6):
-            layout.addWidget(self.make_lesson_button(f"lesson {i}", enabled=False, handler=self.start_lesson))
-
-
-    def make_lesson_button(self, label, enabled=False, handler=None):
-        btn = QPushButton(f"  {'✨' if enabled else '🔒'}  {label}")
+            locked_layout, _ = self.make_lesson_button(f"lesson {i}", enabled=False)
+            layout.addLayout(locked_layout)
+    def make_lesson_button(self, label, enabled=False):
+        btn_layout = QHBoxLayout()
+        btn = QPushButton(f"  🔒  {label}")
         btn.setFixedHeight(50)
         btn.setFont(QFont("Arial", 14))
         btn.setCursor(Qt.PointingHandCursor)
@@ -104,8 +111,6 @@ class NautilusUI(QWidget):
                     padding-left: 20px;
                 }
             """)
-            if handler:  #Connect button to the handler if provided
-                btn.clicked.connect(handler)
         else:
             btn.setStyleSheet("""
                 QPushButton {
@@ -118,17 +123,19 @@ class NautilusUI(QWidget):
             """)
             btn.setEnabled(False)
 
-        return btn
-    
-    def start_lesson(self):
-        print("Lesson 1 button clicked!")
-        self.lesson_window = ASLLearner()
+        btn_layout.addWidget(btn)
+        return btn_layout, btn
+    def open_lesson1(self):
+        letters = ["A", "B", "C"]
+        #letters = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+        #random.shuffle(letters)
+        self.lesson_window = LessonPage(lesson_letters=letters, index=0, parent=self)
         self.lesson_window.show()
-        self.close()
-
+        
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = NautilusUI()
     window.show()
     sys.exit(app.exec())
+
