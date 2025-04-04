@@ -5,17 +5,17 @@ import os
 from CamaraWidget import CameraWidget
 
 class LetterPage(QWidget):
-    def __init__(self, letter, recognizer, on_back, on_success):
+    def __init__(self, letter, recognizer, on_back, on_success, initCamera):
         super().__init__()
         self.letter = letter
         self.recognizer = recognizer
         self.on_back = on_back
         self.on_success = on_success
 
-        self.init_ui()
+        self.init_ui(initCamera)
         self.start_detection()
 
-    def init_ui(self):
+    def init_ui(self, initCamera=False):
         self.setStyleSheet("QLabel { background: transparent; }")
 
         # Main layout
@@ -24,9 +24,10 @@ class LetterPage(QWidget):
         layout.setSpacing(0)
 
         # Add camera widget as base layer
-        self.camera_widget = CameraWidget(self, self.recognizer)
-        self.camera_widget.setFixedSize(360, 640)  # fill area
-        layout.addWidget(self.camera_widget)
+        if initCamera:
+            self.camera_widget = CameraWidget(self, self.recognizer)
+            self.camera_widget.setFixedSize(360, 640)  # fill area
+            layout.addWidget(self.camera_widget)
 
         # Overlay container (floats on top)
         overlay = QWidget(self)
@@ -83,8 +84,8 @@ class LetterPage(QWidget):
 
     def start_detection(self):
         self.timer = QTimer()
-        self.timer.timeout.connect(self.check_symbol)
-        self.timer.start(500)
+        # self.timer.timeout.connect(self.check_symbol)
+        # self.timer.start(500)
 
     def check_symbol(self):
         symbol = self.recognizer.getCurrentHandSymbol()

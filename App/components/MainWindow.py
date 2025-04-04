@@ -18,8 +18,10 @@ class ASLLearner(QMainWindow):
         self.current_index = 0
 
         self.lesson_pages = []
+        needCamera = True
         for letter in self.letters:
-            page = LetterPage(letter, self.recognizer, on_back=self.return_home, on_success=self.next_letter)
+            page = LetterPage(letter, self.recognizer, on_back=self.return_home, on_success=self.next_letter, initCamera=needCamera)
+            needCamera = False
             self.stack.addWidget(page)
             self.lesson_pages.append(page)
 
