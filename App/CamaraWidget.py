@@ -7,28 +7,33 @@ class CameraWidget(QWidget):
     def __init__(self, parent: QWidget, handRecognizer):
         super().__init__(parent)
 
-        # Initialize the layout and QLabel for displaying the camera feed
-        self.layout = QVBoxLayout()
-        self.image_label = QLabel("Loading camera...")
-        self.image_label.setAlignment(Qt.AlignCenter)
-        self.layout.addWidget(self.image_label)
-        self.setLayout(self.layout)
-
         # Assign the passed handRecognizer object to an instance variable
         self.handRecognizer = handRecognizer
+
+        # Initialize the layout and QLabel for displaying the camera feed
+        self.image_label = QLabel()
+        self.image_label.setAlignment(Qt.AlignCenter)
+        self.image_label.setStyleSheet("background-color: black;")  # optional fallback
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(self.image_label)
+        self.setLayout(layout)
 
         # Timer to update frames
         self.timer = QTimer()
         self.timer.timeout.connect(self.updateFrame)
-        self.timer.start(1000 / CameraWidget._FPS)  # Convert FPS to milliseconds
+        self.timer.start(int(1000 / CameraWidget._FPS))  # Convert FPS to milliseconds
 
     def updateFrame(self):
-        rgbFrame = self.handRecognizer.getFrame()  # Call getFrame method from the passed handRecognizer
-        
-        # Convert the frame to QImage
+        rgbFrame = self.handRecognizer.getFrame()
         height, width, channel = rgbFrame.shape
         bytesPerLine = channel * width
         qImg = QImage(rgbFrame.data, width, height, bytesPerLine, QImage.Format_RGB888)
-        
-        # Display the frame in the QLabel
-        self.image_label.setPixmap(QPixmap.fromImage(qImg))
+
+        # Resize image to match widget size
+        scaled = QPixmap.fromImage(qImg).scaled(
+            self.image_label.size(), Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation
+        )
+
+        self.image_label.setPixmap(scaled)
