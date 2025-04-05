@@ -7,16 +7,13 @@ import os
 
 
 class HandRecognizer:
-    VERSION = "1.0.0" # Use this to keep track of the AI model version throughout different branches
+    VERSION = "1.0.1" # Use this to keep track of the AI model version throughout different branches
 
     def __init__(self):
-        self._MODEL_PATH = os.path.join("App", "AI Model", "asl_model.h5")
-        self._LABELS_PATH = os.path.join("App", "AI Model", "labels.pkl")
-
         #TO RUN ON MAC, USE THESE 3 LINES INSTEAD
-        #base_dir = os.path.dirname(os.path.abspath(__file__))
-        #self._MODEL_PATH = os.path.join(base_dir, "AI Model", "asl_model.h5")
-        #self._LABELS_PATH = os.path.join(base_dir, "AI Model", "labels.pkl")
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        self._MODEL_PATH = os.path.join(base_dir, "AI Model", "asl_model.h5")
+        self._LABELS_PATH = os.path.join(base_dir, "AI Model", "labels.pkl")
         # Load trained model
         self.model = load_model(self._MODEL_PATH)
         with open(self._LABELS_PATH, "rb") as f:
@@ -34,6 +31,8 @@ class HandRecognizer:
         """ Opens the camara for the AI Model to view. """
         if not self.isCamaraOpen:
             self.camaraCapture = cv2.VideoCapture(0)
+            self.camaraCapture.set(cv2.CAP_PROP_FRAME_WIDTH, 360)
+            self.camaraCapture.set(cv2.CAP_PROP_FRAME_HEIGHT, 640)
             self.isCamaraOpen = True
     
     def closeCamara(self) -> None:
