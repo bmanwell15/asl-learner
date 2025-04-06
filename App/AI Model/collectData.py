@@ -1,7 +1,9 @@
+print("Importing Libraries...")
 import cv2
 import mediapipe as mp
 import numpy as np
 from pickle import dump as pickleDump
+print("Initalizing Mediapipe...")
 
 # Initialize MediaPipe
 mediapipeHands = mp.solutions.hands
@@ -9,13 +11,12 @@ mediapipeDrawing = mp.solutions.drawing_utils
 hands = mediapipeHands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.7)
 
 # Labels for ASL gestures
-labels = ["A", "B", "C", "-"]
+labels = list("ABCDEFGHIKLMNOPQRSTUVQXY")
 data = {label: [] for label in labels}
 landmarks = None
-
-camara = cv2.Videocamarature(0) # Start the camara
-
 currentLabel = 0
+
+camara = cv2.VideoCapture(0) # Start the camara
 print("Press space to switch to the next label. Press [q] to quit.")
 
 while camara.isOpened():
@@ -43,6 +44,10 @@ while camara.isOpened():
                 landmarks[:, 0] *= -1  # Flip x-axis to make it represented as a right hand
                 
             landmarks = landmarks.flatten() # Convert into a 1-D array
+            important_indices = [4, 8, 12, 16, 20]  # Fingertip indices
+
+            for idx in important_indices:
+                landmarks[idx * 3 : idx * 3 + 3] *= 1.5  # Give 50% more weight to these coords
 
     cv2.putText(frame, f"Label: {labels[currentLabel]}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2) # Show the label as text
     cv2.imshow("Data Collection", frame) # Show the video feed

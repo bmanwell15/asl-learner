@@ -70,6 +70,10 @@ class HandRecognizer:
 
                 if handedness.classification[0].label == "Left":
                     landmarks[:, 0] *= -1  # Flip x-axis to make it represented as a right hand
+                
+                important_indices = [4, 8, 12, 16, 20]  # Fingertip indices
+                for idx in important_indices:
+                    landmarks[idx * 3 : idx * 3 + 3] *= 1.5  # Give 50% more weight to these coords
 
                 landmarks = landmarks.flatten()
                 if len(landmarks) == 63: # If full hand is in the video frame
