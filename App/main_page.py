@@ -120,7 +120,8 @@ class NautilusUI(QWidget):
         btn_layout.addWidget(btn)
         return btn_layout
     def launch_lesson(self):
-        self.learner_window = ASLLearner()
+        from components.MainWindow import ASLLearner
+        self.learner_window = ASLLearner(main_window=self)
         self.hide()
         self.learner_window.show()
 

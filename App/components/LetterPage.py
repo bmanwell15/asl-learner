@@ -36,13 +36,14 @@ class LetterPage(QWidget):
         layout.setSpacing(25)
         layout.setAlignment(Qt.AlignTop)
         self.setLayout(layout)
-
+        # Back button 
         top_bar = QHBoxLayout()
         back_btn = QPushButton("←")
         back_btn.setFont(QFont("Arial", 20))
         back_btn.setFixedSize(40, 40)
-        back_btn.clicked.connect(self.on_back)
-
+        back_btn.clicked.connect(self.go_back)
+        
+            
         self.streak_label = QLabel("5 🔥")
         self.streak_label.setFont(QFont("Arial", 16))
         self.streak_label.setStyleSheet("color: #a139e8;")  
@@ -86,3 +87,6 @@ class LetterPage(QWidget):
         else:
             self.feedback.setText("❓ No hand detected")
             self.letter_label.setStyleSheet("color: white;")
+            
+    def go_back(self):
+        self.on_back()

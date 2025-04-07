@@ -6,11 +6,12 @@ from HandRecognizer import HandRecognizer
 import string
 
 class ASLLearner(QMainWindow):
-    def __init__(self):
+    def __init__(self, main_window = None):
         super().__init__()
+        self.main_window = main_window
         self.setWindowTitle("ASL Learner")
         self.setFixedSize(360, 640)
-
+        
         # Central container (manual widget layering)
         self.container = QWidget(self)
         self.setCentralWidget(self.container)
@@ -30,9 +31,9 @@ class ASLLearner(QMainWindow):
         self.letters = list("UVWXY") #list("ABCDEFGHIKLMNOPQRSTUVWXY")
         self.current_index = 0
         self.lesson_pages = []
-
-        for letter in self.letters:
-            page = LetterPage(letter, self.recognizer, self.return_home, self.next_letter)
+        
+        for letter in self.letters: 
+            page = LetterPage(letter, self.recognizer, self.go_back, self.next_letter)
             self.stack.addWidget(page)
             self.lesson_pages.append(page)
 
@@ -42,7 +43,13 @@ class ASLLearner(QMainWindow):
         self.detection_timer = QTimer()
         self.detection_timer.timeout.connect(self.detect_and_update)
         self.detection_timer.start(500)
-
+    #Back button
+    def go_back(self):
+        self.close()
+        if self.main_window:
+            self.main_window.show()
+        self.recognizer.closeCamara()
+        self.detection_timer.stop()
     def detect_and_update(self):
         symbol = self.recognizer.getCurrentHandSymbol()
         current_page = self.lesson_pages[self.current_index]
