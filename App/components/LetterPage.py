@@ -59,9 +59,9 @@ class LetterPage(QWidget):
 
         self.sign_image = QLabel()
         self.sign_image.setAlignment(Qt.AlignCenter)
-        img_path = os.path.join("assets", "images", f"{self.letter}.png")
+        img_path = os.path.join("assets", f"{self.letter.upper()}.png")
         if os.path.exists(img_path):
-            self.sign_image.setPixmap(QPixmap(img_path).scaled(150, 150, Qt.KeepAspectRatio))
+            self.sign_image.setPixmap(QPixmap(img_path).scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         else:
             self.sign_image.setText("Image not found")
         layout.addWidget(self.sign_image)
