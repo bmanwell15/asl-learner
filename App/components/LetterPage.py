@@ -62,9 +62,9 @@ class LetterPage(QWidget):
         self.sign_image.setAlignment(Qt.AlignCenter)
         base_path = os.path.dirname(os.path.abspath(__file__))
         img_path = os.path.join(base_path, "..", "assets", f"{self.letter.upper()}.png")
-        img_path = os.path.normpath(img_path)
-        if os.path.exists(img_path):
-            self.sign_image.setPixmap(QPixmap(img_path).scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        self.img_path = os.path.normpath(img_path)
+        if os.path.exists(self.img_path):
+            self.sign_image.setPixmap(QPixmap(self.img_path).scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         else:
             self.sign_image.setText("Image not found")
         layout.addWidget(self.sign_image)
@@ -82,6 +82,10 @@ class LetterPage(QWidget):
             self.feedback.setText("✅ Correct!")
             self.letter_label.setStyleSheet("color: lightgreen;")
             self.correct_detected = True
+            # Swap to green version of the image
+            green_img_path = self.img_path.replace(".png", "_green.png")
+            if os.path.exists(green_img_path):
+                self.sign_image.setPixmap(QPixmap(green_img_path).scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation))
             QTimer.singleShot(1500, self.on_success)
         elif symbol:
             self.feedback.setText(f"❌ Detected: {symbol}")
