@@ -60,7 +60,9 @@ class LetterPage(QWidget):
 
         self.sign_image = QLabel()
         self.sign_image.setAlignment(Qt.AlignCenter)
-        img_path = os.path.join("assets", f"{self.letter.upper()}.png")
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        img_path = os.path.join(base_path, "..", "assets", f"{self.letter.upper()}.png")
+        img_path = os.path.normpath(img_path)
         if os.path.exists(img_path):
             self.sign_image.setPixmap(QPixmap(img_path).scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         else:
