@@ -1,9 +1,9 @@
 from PySide6.QtWidgets import QLabel, QVBoxLayout, QWidget
 from PySide6.QtGui import QImage, QPixmap
 from PySide6.QtCore import Qt, QTimer
+import Constants
 
 class CameraWidget(QWidget):
-    _FPS = 30
     def __init__(self, parent: QWidget, handRecognizer):
         super().__init__(parent)
 
@@ -23,7 +23,7 @@ class CameraWidget(QWidget):
         # Timer to update frames
         self.timer = QTimer()
         self.timer.timeout.connect(self.updateFrame)
-        self.timer.start(int(1000 / CameraWidget._FPS))  # Convert FPS to milliseconds
+        self.timer.start(int(1000 / Constants.CAMERA_FPS))  # Convert FPS to milliseconds
 
     def updateFrame(self):
         rgbFrame = self.handRecognizer.getFrame()

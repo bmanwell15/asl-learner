@@ -4,19 +4,17 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import os
+import Constants
 
 
 class HandRecognizer:
-    VERSION = "1.0.1" # Use this to keep track of the AI model version throughout different branches
+    VERSION = "1.1.0" # Use this to keep track of the AI model version throughout different branches
 
     def __init__(self):
-        #TO RUN ON MAC, USE THESE 3 LINES INSTEAD
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        self._MODEL_PATH = os.path.join(base_dir, "AI Model", "asl_model.h5")
-        self._LABELS_PATH = os.path.join(base_dir, "AI Model", "labels.pkl")
+        self._LABELS_PATH = os.path.join(Constants.BASE_DIRECTORY, "AI Model", "labels.pkl")
         # Load trained model
-        self.model = load_model(self._MODEL_PATH)
-        with open(self._LABELS_PATH, "rb") as f:
+        self.model = load_model(Constants.AI_MODEL_PATH)
+        with open(Constants.AI_MODEL_LABELS_PATH, "rb") as f:
             self.labels = pickleLoad(f)
 
         # Initilaze Mediapipe hand tracking

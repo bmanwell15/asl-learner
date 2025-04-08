@@ -2,6 +2,7 @@ from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QPushBu
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QFont, QPixmap
 import os
+import Constants
 
 class LetterPage(QWidget):
     def __init__(self, letter, recognizer, on_back, on_success):
@@ -60,8 +61,7 @@ class LetterPage(QWidget):
 
         self.sign_image = QLabel()
         self.sign_image.setAlignment(Qt.AlignCenter)
-        base_path = os.path.dirname(os.path.abspath(__file__))
-        img_path = os.path.join(base_path, "..", "assets", f"{self.letter.upper()}.png")
+        img_path = os.path.join(Constants.BASE_DIRECTORY, "..", "Assets", f"{self.letter.upper()}.png")
         self.img_path = os.path.normpath(img_path)
         if os.path.exists(self.img_path):
             self.sign_image.setPixmap(QPixmap(self.img_path).scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation))
