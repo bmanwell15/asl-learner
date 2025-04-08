@@ -27,7 +27,7 @@ class ASLLearner(QMainWindow):
         self.stack.setGeometry(0, 0, 360, 640)
         self.stack.raise_()  # force top visibility
 
-        self.letters = list("UVWXY") #list("ABCDEFGHIKLMNOPQRSTUVWXY")
+        self.letters = list("XY")
         self.current_index = 0
         self.lesson_pages = []
 

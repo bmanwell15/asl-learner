@@ -64,18 +64,25 @@ class HandRecognizer:
                 #self.mpDrawing.draw_landmarks(frame, handLandmarks, self.mpHands.HAND_CONNECTIONS)
                 landmarks = np.array([[lm.x, lm.y, lm.z] for lm in handLandmarks.landmark])
 
-                landmarks -= landmarks[0]  # Translate to make the wrist the reference point
-                max_dist = np.linalg.norm(landmarks, axis=1).max()  # Compute max distance
-                landmarks /= max_dist  # Normalize landmarks
+                # Normalize landmarks (translate wrist to origin and scale)
+                landmarks -= landmarks[0]
+                maxDistance = np.max(np.linalg.norm(landmarks, axis=1))
+                if maxDistance > 0:
+                    landmarks /= maxDistance
 
                 if handedness.classification[0].label == "Left":
-                    landmarks[:, 0] *= -1  # Flip x-axis to make it represented as a right hand
-                
-                important_indices = [4, 8, 12, 16, 20]  # Fingertip indices
-                for idx in important_indices:
-                    landmarks[idx * 3 : idx * 3 + 3] *= 1.5  # Give 50% more weight to these coords
+                    landmarks[:, 0] *= -1  # Flip to normalize left/right hand
+
+                # Flatten landmarks + add custom feature(s)
+                landmarks = landmarks.flatten()
+
+                # Optionally emphasize fingertips
+                # important_indices = [4, 8, 12]
+                # for idx in important_indices:
+                #     landmarks[idx * 3 : idx * 3 + 3] *= 1.5
 
                 landmarks = landmarks.flatten()
+
                 if len(landmarks) == 63: # If full hand is in the video frame
                     landmarks = np.expand_dims(landmarks, axis=0)
                     prediction = self.model.predict(landmarks, verbose=0) # verbose=0 makes it not print a progress bar when predicting

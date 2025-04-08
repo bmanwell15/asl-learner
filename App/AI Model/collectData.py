@@ -11,15 +11,18 @@ mediapipeDrawing = mp.solutions.drawing_utils
 hands = mediapipeHands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.7)
 
 # Labels for ASL gestures
-labels = list("ABCDEFGHIKLMNOPQRSTUVQXY")
+labels = list("ABCDEFGHIKLMNOPQRSTUVWXY-")
 data = {label: [] for label in labels}
 landmarks = None
 currentLabel = 0
+iteration = 0
 
 camara = cv2.VideoCapture(0) # Start the camara
 print("Press space to switch to the next label. Press [q] to quit.")
 
 while camara.isOpened():
+    iteration += 1
+    print("Iteration", iteration)
     ret, frame = camara.read()
     if not ret: break
 
@@ -34,22 +37,26 @@ while camara.isOpened():
             # Convert landmarks to a NumPy array
             landmarks = np.array([[lm.x, lm.y, lm.z] for lm in handLandmarks.landmark])
 
-            # Normalize: Translate so wrist (index 0) is at (0,0,0)
+            # Normalize landmarks (translate wrist to origin and scale)
             landmarks -= landmarks[0]
-            maxDistanceFromWrist = np.max(np.linalg.norm(landmarks, axis=1))  # Compute max distance from wrist (fixing the previous error)
-            if maxDistanceFromWrist > 0:  # Avoid division by zero
-                landmarks /= maxDistanceFromWrist  # Scale the landmarks
-            
+            maxDistance = np.max(np.linalg.norm(landmarks, axis=1))
+            if maxDistance > 0:
+                landmarks /= maxDistance
+
             if handedness.classification[0].label == "Left":
-                landmarks[:, 0] *= -1  # Flip x-axis to make it represented as a right hand
+                landmarks[:, 0] *= -1  # Flip to normalize left/right hand
+
+            # Flatten landmarks + add custom feature(s)
+            landmarks = landmarks.flatten()
+
+            # Optionally emphasize fingertips
+            # important_indices = [4, 8, 12]
+            # for idx in important_indices:
+            #     landmarks[idx * 3 : idx * 3 + 3] *= 1.5
                 
             landmarks = landmarks.flatten() # Convert into a 1-D array
-            important_indices = [4, 8, 12, 16, 20]  # Fingertip indices
 
-            for idx in important_indices:
-                landmarks[idx * 3 : idx * 3 + 3] *= 1.5  # Give 50% more weight to these coords
-
-    cv2.putText(frame, f"Label: {labels[currentLabel]}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2) # Show the label as text
+    cv2.putText(frame, f"Training: {labels[currentLabel]}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2) # Show the label as text
     cv2.imshow("Data Collection", frame) # Show the video feed
 
     key = cv2.waitKey(1) # Get a pressed key
@@ -57,7 +64,6 @@ while camara.isOpened():
         if len(landmarks) == 63:
                 data[labels[currentLabel]].append(landmarks)
         currentLabel = (currentLabel + 1) % len(labels)
-        print(f"Switched to {labels[currentLabel]}")
     elif key == ord('q'): # Quit on q
         break
 
