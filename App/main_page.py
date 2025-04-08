@@ -6,13 +6,13 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtGui import QPixmap, QFont
 from PySide6.QtCore import Qt
-import Constants
+from components.MainWindow import ASLLearner
 
 class NautilusUI(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Nautilus")
-        self.setFixedSize(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
+        self.setFixedSize(360, 640)
         self.setStyleSheet("""
             QWidget {
                 background-color: qlineargradient(
@@ -57,7 +57,7 @@ class NautilusUI(QWidget):
         logo.setAlignment(Qt.AlignCenter)
         logo.setStyleSheet("background: transparent;")
 
-        logo_path = os.path.join(os.path.dirname(__file__), "assets", "nautilus_logo.png")
+        logo_path = os.path.join(os.path.dirname(__file__), "nautilus_logo.png")
         pixmap = QPixmap(logo_path)
         if pixmap.isNull():
             logo.setText("🌀")
@@ -83,59 +83,73 @@ class NautilusUI(QWidget):
         layout.addWidget(title)
 
         # Lesson buttons
-        self.lessonButtons = []
-        self.lessonButtons.append(self.make_lesson_button("lesson 1", enabled=True))
-        for i in range(2, 6):
-            self.lessonButtons.append(self.make_lesson_button(f"lesson {i}", enabled=False))
-        
-        for button in self.lessonButtons:
-           layout.addLayout(button)
+        layout.addLayout(self.make_lesson_button("lesson 1", lesson_id=1, enabled=True))   # enabled by default
+        layout.addLayout(self.make_lesson_button("lesson 2", lesson_id=2, enabled=False))  # locked at first
 
-    def make_lesson_button(self, label, enabled=False):
+        for i in range(3, 6):
+            layout.addLayout(self.make_lesson_button(f"lesson {i}", lesson_id = i, enabled=False))
+
+    def make_lesson_button(self, label, lesson_id, enabled=False):
         btn_layout = QHBoxLayout()
-        btn = QPushButton(f"  🔒  {label}")
+        btn = QPushButton(f"  🔒  {label}" if not enabled else label)
         btn.setFixedHeight(50)
         btn.setFont(QFont("Arial", 14))
         btn.setCursor(Qt.PointingHandCursor)
 
+        if lesson_id == 1:
+            btn.clicked.connect(lambda: self.launch_lesson(1))
+        elif lesson_id == 2:
+            self.lesson2_button = btn 
+            btn.clicked.connect(lambda: self.launch_lesson(2))
+
+        btn.setEnabled(enabled)
+
         if enabled:
             btn.setStyleSheet("""
                 QPushButton {
-                    background-color: #2d36f4;
-                    color: white;
-                    border-radius: 25px;
-                    text-align: left;
-                    padding-left: 20px;
+                background-color: #2d36f4;
+                color: white;
+                border-radius: 25px;
+                text-align: left;
+                padding-left: 20px;
                 }
             """)
-            btn.clicked.connect(self.launch_lesson)
         else:
             btn.setStyleSheet("""
                 QPushButton {
-                    background-color: #b0bcc1;
-                    color: #333;
-                    border-radius: 25px;
-                    text-align: left;
-                    padding-left: 20px;
+                background-color: #b0bcc1;
+                color: #333;
+                border-radius: 25px;
+                text-align: left;
+                padding-left: 20px;
                 }
             """)
-            btn.setEnabled(False)
 
         btn_layout.addWidget(btn)
         return btn_layout
-    def launch_lesson(self):
-        self.updateButton(0, "  🔒  loading lesson.")
-        from MainWindow import ASLLearner
-        self.updateButton(0, "  🔒  loading lesson..")
-        self.learner_window = ASLLearner(main_window=self)
-        self.updateButton(0, "  🔒  loading lesson...")
+
+   
+    
+    def launch_lesson(self, lesson_id=1):
+        from components.MainWindow import ASLLearner
+        if hasattr(self, 'learner_window') and self.learner_window:
+            self.learner_window.deleteLater()
+        self.learner_window = ASLLearner(main_window=self, start_lesson=lesson_id)
         self.hide()
         self.learner_window.show()
-    
-    def updateButton(self, buttonNum, text): # Updates the button
-        self.lessonButtons[buttonNum].itemAt(buttonNum).widget().setText(text)
-        QApplication.processEvents() # Update the GUI
-
+    def unlock_lesson_2(self):
+        self.lesson2_button.setEnabled(True)
+        self.lesson2_button.setText("lesson 2")
+        self.lesson2_button.clicked.connect(lambda: self.launch_lesson(2))
+        self.lesson2_button.setStyleSheet("""
+            QPushButton {
+            background-color: #2d36f4;
+            color: white;
+            border-radius: 25px;
+            text-align: left;
+            padding-left: 20px;
+            }
+        """)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
