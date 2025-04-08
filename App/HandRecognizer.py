@@ -29,8 +29,8 @@ class HandRecognizer:
         """ Opens the camara for the AI Model to view. """
         if not self.isCamaraOpen:
             self.camaraCapture = cv2.VideoCapture(0)
-            self.camaraCapture.set(cv2.CAP_PROP_FRAME_WIDTH, 360)
-            self.camaraCapture.set(cv2.CAP_PROP_FRAME_HEIGHT, 640)
+            self.camaraCapture.set(cv2.CAP_PROP_FRAME_WIDTH, Constants.WINDOW_WIDTH)
+            self.camaraCapture.set(cv2.CAP_PROP_FRAME_HEIGHT, Constants.WINDOW_HEIGHT)
             self.isCamaraOpen = True
     
     def closeCamara(self) -> None:
@@ -72,13 +72,6 @@ class HandRecognizer:
                     landmarks[:, 0] *= -1  # Flip to normalize left/right hand
 
                 # Flatten landmarks + add custom feature(s)
-                landmarks = landmarks.flatten()
-
-                # Optionally emphasize fingertips
-                # important_indices = [4, 8, 12]
-                # for idx in important_indices:
-                #     landmarks[idx * 3 : idx * 3 + 3] *= 1.5
-
                 landmarks = landmarks.flatten()
 
                 if len(landmarks) == 63: # If full hand is in the video frame

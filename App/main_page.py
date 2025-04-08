@@ -6,7 +6,7 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtGui import QPixmap, QFont
 from PySide6.QtCore import Qt
-from components.MainWindow import ASLLearner
+import Constants
 
 class NautilusUI(QWidget):
     def __init__(self):
@@ -57,8 +57,7 @@ class NautilusUI(QWidget):
         logo.setAlignment(Qt.AlignCenter)
         logo.setStyleSheet("background: transparent;")
 
-        logo_path = os.path.join(os.path.dirname(__file__), "nautilus_logo.png")
-        pixmap = QPixmap(logo_path)
+        pixmap = QPixmap(Constants.NAUTILUS_LOGO_PATH)
         if pixmap.isNull():
             logo.setText("🌀")
             logo.setFont(QFont("Arial", 64))
@@ -83,11 +82,17 @@ class NautilusUI(QWidget):
         layout.addWidget(title)
 
         # Lesson buttons
-        layout.addLayout(self.make_lesson_button("lesson 1", lesson_id=1, enabled=True))   # enabled by default
-        layout.addLayout(self.make_lesson_button("lesson 2", lesson_id=2, enabled=False))  # locked at first
+
+        self.lessonButtons = []
+
+        self.lessonButtons.append(self.make_lesson_button("lesson 1", lesson_id=1, enabled=True))
+        self.lessonButtons.append(self.make_lesson_button("lesson 2", lesson_id=2, enabled=False))
 
         for i in range(3, 6):
-            layout.addLayout(self.make_lesson_button(f"lesson {i}", lesson_id = i, enabled=False))
+            self.lessonButtons.append(self.make_lesson_button(f"lesson {i}", lesson_id=i, enabled=False))
+        
+        for button in self.lessonButtons:
+            layout.addWidget(button.itemAt(0).widget())
 
     def make_lesson_button(self, label, lesson_id, enabled=False):
         btn_layout = QHBoxLayout()
@@ -131,12 +136,19 @@ class NautilusUI(QWidget):
    
     
     def launch_lesson(self, lesson_id=1):
-        from components.MainWindow import ASLLearner
+        self.updateButton(lesson_id, "loading lesson...")
+        from MainWindow import ASLLearner
+        self.updateButton(lesson_id, "loading lesson.....")
         if hasattr(self, 'learner_window') and self.learner_window:
             self.learner_window.deleteLater()
+        self.updateButton(lesson_id, "loading lesson......")
         self.learner_window = ASLLearner(main_window=self, start_lesson=lesson_id)
+        self.updateButton(lesson_id, "loading lesson.......")
         self.hide()
         self.learner_window.show()
+        self.updateButton(lesson_id, f"lesson {lesson_id}")
+
+
     def unlock_lesson_2(self):
         self.lesson2_button.setEnabled(True)
         self.lesson2_button.setText("lesson 2")
@@ -150,6 +162,11 @@ class NautilusUI(QWidget):
             padding-left: 20px;
             }
         """)
+    
+
+    def updateButton(self, lesson_id, text): # Updates the button
+        self.lessonButtons[lesson_id - 1].itemAt(0).widget().setText(text)
+        QApplication.processEvents() # Update the GUI
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
