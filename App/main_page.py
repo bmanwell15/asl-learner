@@ -1,5 +1,6 @@
 import sys
 import os
+from datetime import datetime, timedelta
 from PySide6.QtWidgets import (
     QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout,
     QSizePolicy, QSpacerItem
@@ -40,7 +41,7 @@ class NautilusUI(QWidget):
         name.setStyleSheet("background: transparent;")
         
 
-        flame = QLabel("5 🔥")
+        flame = QLabel(str(NautilusUI.getStreak()) + " 🔥")
         flame.setStyleSheet("color: #a139e8;")
         flame.setFont(QFont("Arial", 12))
         flame.setStyleSheet("background: transparent;")
@@ -167,6 +168,34 @@ class NautilusUI(QWidget):
     def updateButton(self, lesson_id, text): # Updates the button
         self.lessonButtons[lesson_id - 1].itemAt(0).widget().setText(text)
         QApplication.processEvents() # Update the GUI
+    
+    def getStreak():
+        today = datetime.today().date()
+        if os.path.exists(Constants.SAVE_FILE_PATH):
+            with open(Constants.SAVE_FILE_PATH, "r") as saveFile:
+                saveData = saveFile.readlines()
+            for line in saveData:
+                lineValue = line[line.find("=") + 1:] # Each line in file is formatted as key=value
+                if line.startswith("lastSeen"):
+                    lastSeen = datetime.strptime(lineValue, "%Y-%m-%d\n").date()
+                elif line.startswith("currentStreak"):
+                    currentStreak = int(lineValue)
+        
+            dayDifference = (today - lastSeen).days
+            if dayDifference == 1:
+                currentStreak += 1
+            elif dayDifference != 0: # Account for loggin on multiple times in a day
+                currentStreak = 1 # Equals 1 if counting today, 0 otherwise
+        else: 
+            currentStreak = 1
+            
+        with open(Constants.SAVE_FILE_PATH, "w") as saveFile:
+            saveFile.write("lastSeen=" + today.strftime("%Y-%m-%d") + "\n")
+            saveFile.write(f"currentStreak={currentStreak}\n")
+        
+        return currentStreak
+
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
