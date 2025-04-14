@@ -10,7 +10,7 @@ class WordSpellingPage(QWidget):
         self.on_back = on_back
         self.on_complete = on_complete
 
-        self.words = ["CLIP", "BARK", "SHOT", "FEED", "TRAP", "DESK", "CHOIR"]
+        self.words = ["CLIP", "BARK", "SHOE", "FEED", "RAP", "DESK", "CHOIR"]
         self.current_word_index = 0
         self.current_letter_index = 0
         self.correct_detected = False
