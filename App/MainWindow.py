@@ -30,19 +30,9 @@ class ASLLearner(QMainWindow):
         self.stack.setGeometry(0, 0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
         self.stack.raise_()  # force top visibility
 
-        self.letters = list("ABC") #("DEFGHIKLMNOPQRSTUVWXY")
+        self.letters = list("ABCDEFGHIKLMNOPQRS")
         self.current_index = 0
         self.lesson_pages = []
-        
-        for letter in self.letters: 
-            page = LetterPage(letter, self.recognizer, self.go_back, self.next_letter)
-            self.stack.addWidget(page)
-            self.lesson_pages.append(page)
-
-        
-        self.word_lesson = WordSpellingPage(self.recognizer,self.go_back,self.return_home)
-        self.stack.addWidget(self.word_lesson)
-
 
         # Symbol detection timer
         self.detection_timer = QTimer()
@@ -50,8 +40,14 @@ class ASLLearner(QMainWindow):
         self.detection_timer.start(Constants.SYMBOL_DETECTION_INTERVAL_MS)
         # Start from correct lesson
         if start_lesson == 1:
+            for letter in self.letters: 
+                page = LetterPage(letter, self.recognizer, self.go_back, self.next_letter)
+                self.stack.addWidget(page)
+                self.lesson_pages.append(page)
             self.stack.setCurrentWidget(self.lesson_pages[0])
         elif start_lesson == 2:
+            self.word_lesson = WordSpellingPage(self.recognizer,self.go_back,self.return_home)
+            self.stack.addWidget(self.word_lesson)
             self.stack.setCurrentWidget(self.word_lesson)
             self.word_lesson.reset_lesson()
     #Back button
@@ -61,6 +57,7 @@ class ASLLearner(QMainWindow):
             self.main_window.show()
         self.recognizer.closeCamara()
         self.detection_timer.stop()
+    
     def detect_and_update(self):
         current_widget = self.stack.currentWidget()
         if current_widget in self.lesson_pages:

@@ -137,6 +137,7 @@ class NautilusUI(QWidget):
    
     
     def launch_lesson(self, lesson_id=1):
+        self.lessonButtons[lesson_id - 1].setEnabled(False)
         self.updateButton(lesson_id, "loading lesson...")
         from MainWindow import ASLLearner
         self.updateButton(lesson_id, "loading lesson.....")
@@ -147,6 +148,7 @@ class NautilusUI(QWidget):
         self.updateButton(lesson_id, "loading lesson.......")
         self.hide()
         self.learner_window.show()
+        self.lessonButtons[lesson_id - 1].setEnabled(True)
         self.updateButton(lesson_id, f"lesson {lesson_id}")
 
 
