@@ -1,7 +1,11 @@
-# asl-learner
+# ASL Learner App
 Using AI models to teach ASL symbols
 
-
+## Design 
+<p float="left">
+  <img src="Documentation/MainPage.png" width="200" style="margin-right: 100px;" />
+  <img src="Documentation/LessonPage.png" width="215" />
+</p>
 ## Setup
 
 ### Installing the Correct Python Version
