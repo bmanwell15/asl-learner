@@ -1,11 +1,12 @@
 import sys
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
+import threading
 from PySide6.QtWidgets import (
     QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout,
     QSizePolicy, QSpacerItem
 )
-from PySide6.QtGui import QPixmap, QFont
+from PySide6.QtGui import QPixmap, QFont, QIcon
 from PySide6.QtCore import Qt
 import Constants
 
@@ -13,7 +14,8 @@ class NautilusUI(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Nautilus")
-        self.setFixedSize(360, 640)
+        self.setWindowIcon(QIcon(Constants.NAUTILUS_LOGO_PATH))
+        self.setFixedSize(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
         self.setStyleSheet("""
             QWidget {
                 background-color: qlineargradient(
@@ -24,6 +26,8 @@ class NautilusUI(QWidget):
             }
         """)
         self.setup_ui()
+        self.loadImportsThread = threading.Thread(target=self.loadImport, daemon=True)
+        self.loadImportsThread.start() # Start loading the library, even before the user clicks the button
 
     def setup_ui(self):
         layout = QVBoxLayout(self)
@@ -139,6 +143,7 @@ class NautilusUI(QWidget):
     def launch_lesson(self, lesson_id=1):
         self.lessonButtons[lesson_id - 1].setEnabled(False)
         self.updateButton(lesson_id, "loading lesson...")
+        self.loadImportsThread.join()
         from MainWindow import ASLLearner
         self.updateButton(lesson_id, "loading lesson....")
         if hasattr(self, 'learner_window') and self.learner_window:
@@ -196,6 +201,9 @@ class NautilusUI(QWidget):
             saveFile.write(f"currentStreak={currentStreak}\n")
         
         return currentStreak
+    
+    def loadImport(self):
+        from MainWindow import ASLLearner
 
 
 

@@ -1,6 +1,7 @@
-from PySide6.QtWidgets import QMainWindow, QWidget, QStackedLayout, QStackedWidget
+from PySide6.QtWidgets import QMainWindow, QWidget, QStackedWidget
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QMessageBox
+from PySide6.QtGui import QIcon
 from LetterPage import LetterPage
 from WordPage import WordSpellingPage
 from CamaraWidget import CameraWidget
@@ -12,6 +13,7 @@ class ASLLearner(QMainWindow):
         super().__init__()
         self.main_window = main_window
         self.setWindowTitle("ASL Learner")
+        self.setWindowIcon(QIcon(Constants.NAUTILUS_LOGO_PATH))
         self.setFixedSize(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
         
         # Central container (manual widget layering)
