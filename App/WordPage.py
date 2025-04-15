@@ -2,6 +2,7 @@ from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QPushButton, QHBoxLa
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QFont, QPixmap
 import os
+import Constants
 
 class WordSpellingPage(QWidget):
     def __init__(self, recognizer, on_back, on_complete):
@@ -77,9 +78,8 @@ class WordSpellingPage(QWidget):
         self.word_label.setText(highlighted)
 
         self.current_letter = word[self.current_letter_index]
-        base_path = os.path.dirname(os.path.abspath(__file__))
-        self.img_path = os.path.normpath(os.path.join(base_path, "..", "assets", f"{self.current_letter.upper()}.png"))
-        green_img_path = self.img_path.replace(".png", "_green.png")
+        self.img_path = os.path.normpath(os.path.join(Constants.BASE_DIRECTORY, "..", "Assets", f"{self.current_letter.upper()}.png"))
+        #green_img_path = self.img_path.replace(".png", "_green.png")
 
         if os.path.exists(self.img_path):
             self.sign_image.setPixmap(QPixmap(self.img_path).scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation))
@@ -116,9 +116,9 @@ class WordSpellingPage(QWidget):
                     QTimer.singleShot(1000, lambda: self.is_active and self.feedback_label.setText("Next word. Get ready!"))
                     QTimer.singleShot(1500, lambda: self.is_active and (self.update_display(), self.reset_flag()))
             else:
-                self.update_display()
                 QTimer.singleShot(1000, lambda: self.is_active and self.feedback_label.setText("Sign the next letter"))
                 QTimer.singleShot(1200, self.reset_flag)
+            self.update_display()
         elif symbol:
             self.feedback_label.setText(f"❌ Detected: {symbol}, expected: {target_letter}")
         else:

@@ -140,12 +140,12 @@ class NautilusUI(QWidget):
         self.lessonButtons[lesson_id - 1].setEnabled(False)
         self.updateButton(lesson_id, "loading lesson...")
         from MainWindow import ASLLearner
-        self.updateButton(lesson_id, "loading lesson.....")
+        self.updateButton(lesson_id, "loading lesson....")
         if hasattr(self, 'learner_window') and self.learner_window:
             self.learner_window.deleteLater()
-        self.updateButton(lesson_id, "loading lesson......")
+        self.updateButton(lesson_id, "loading lesson.....")
         self.learner_window = ASLLearner(main_window=self, start_lesson=lesson_id)
-        self.updateButton(lesson_id, "loading lesson.......")
+        self.updateButton(lesson_id, "loading lesson......")
         self.hide()
         self.learner_window.show()
         self.lessonButtons[lesson_id - 1].setEnabled(True)
