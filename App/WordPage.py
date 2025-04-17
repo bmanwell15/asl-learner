@@ -78,7 +78,13 @@ class WordSpellingPage(QWidget):
 
         self.hint_btn.clicked.connect(self.show_hint)
         self.hint_btn.setVisible(True)
-        layout.addWidget(self.hint_btn, alignment=Qt.AlignCenter)
+        # Button at bottom
+        bottom_hint = QHBoxLayout()
+        bottom_hint.addStretch()
+        bottom_hint.addWidget(self.hint_btn)
+        bottom_hint.addStretch()
+        layout.addStretch()
+        layout.addLayout(bottom_hint)
 
     def update_display(self):
         word = self.words[self.current_word_index]
