@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QPushButton, QHBoxLayout
-from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QFont, QPixmap
+from PySide6.QtCore import Qt, QTimer, QSize
+from PySide6.QtGui import QFont, QPixmap, QIcon
 import os
 import Constants
 
@@ -65,6 +65,21 @@ class WordSpellingPage(QWidget):
         self.feedback_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.feedback_label)
 
+        icon_path = os.path.normpath(os.path.join(Constants.BASE_DIRECTORY, "assets", "hint_icon.png"))
+        print("Hint icon path:", icon_path)
+
+        self.hint_btn = QPushButton()  
+        if os.path.exists(icon_path):
+            icon = QIcon(icon_path)
+            self.hint_btn.setIcon(icon)
+            self.hint_btn.setIconSize(QSize(100, 100))
+        else:
+            print("❌ hint_icon.png does not exist!")
+
+        self.hint_btn.clicked.connect(self.show_hint)
+        self.hint_btn.setVisible(True)
+        layout.addWidget(self.hint_btn, alignment=Qt.AlignCenter)
+
     def update_display(self):
         word = self.words[self.current_word_index]
         highlighted = ""
@@ -78,12 +93,10 @@ class WordSpellingPage(QWidget):
         self.word_label.setText(highlighted)
 
         self.current_letter = word[self.current_letter_index]
-        self.img_path = os.path.normpath(os.path.join(Constants.BASE_DIRECTORY, "..", "Assets", f"{self.current_letter.upper()}.png"))
+        self.img_path = os.path.normpath(os.path.join(Constants.BASE_DIRECTORY, "Assets", f"{self.current_letter.upper()}.png"))
 
-        if os.path.exists(self.img_path):
-            self.sign_image.setPixmap(QPixmap(self.img_path).scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation))
-        else:
-            self.sign_image.setText("Image not found")
+        self.sign_image.clear()
+        self.sign_image.setText("Can't remember? Tap the hint button!💡 ")
 
     def detect(self):
         if not self.is_active or self.correct_detected:
@@ -125,6 +138,13 @@ class WordSpellingPage(QWidget):
         else:
             self.safe_set_text(self.feedback_label, "❓ No hand detected")
 
+    def show_hint(self):
+        if os.path.exists(self.img_path):
+            self.sign_image.setPixmap(QPixmap(self.img_path).scaled(250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+            self.safe_set_text(self.feedback_label, "Here's a hint! Follow this sign.")
+        else:
+            self.sign_image.setText("Hint image not found")
+            
     def safe_set_text(self, label, text):
         try:
             if self.is_active:
