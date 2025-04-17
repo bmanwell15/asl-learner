@@ -50,7 +50,12 @@ class ASLLearner(QMainWindow):
         elif start_lesson == 2:
             self.word_lesson = WordSpellingPage(self.recognizer,self.go_back,self.return_home)
             self.stack.addWidget(self.word_lesson)
-            self.stack.setCurrentWidget(self.word_lesson)
+            # Slight delay before switching to allow UI & camera to initialize
+            QTimer.singleShot(50, lambda: self.stack.setCurrentWidget(self.word_lesson))
+
+            # Force immediate camera draw to prevent flash
+            QTimer.singleShot(60, self.camera_widget.updateFrame)
+            #self.stack.setCurrentWidget(self.word_lesson)
             self.word_lesson.reset_lesson()
     #Back button
     def go_back(self):

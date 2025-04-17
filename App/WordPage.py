@@ -79,7 +79,6 @@ class WordSpellingPage(QWidget):
 
         self.current_letter = word[self.current_letter_index]
         self.img_path = os.path.normpath(os.path.join(Constants.BASE_DIRECTORY, "..", "Assets", f"{self.current_letter.upper()}.png"))
-        #green_img_path = self.img_path.replace(".png", "_green.png")
 
         if os.path.exists(self.img_path):
             self.sign_image.setPixmap(QPixmap(self.img_path).scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation))
@@ -96,7 +95,8 @@ class WordSpellingPage(QWidget):
 
         if symbol == target_letter:
             self.correct_detected = True
-            self.feedback_label.setText(f"✅ {symbol} is correct!")
+            self.safe_set_text(self.feedback_label, f"✅ {symbol} is correct!")
+
             green_img_path = self.img_path.replace(".png", "_green.png")
             if os.path.exists(green_img_path):
                 self.sign_image.setPixmap(QPixmap(green_img_path).scaled(50, 50, Qt.KeepAspectRatio, Qt.SmoothTransformation))
@@ -109,20 +109,32 @@ class WordSpellingPage(QWidget):
 
                 if self.current_word_index >= len(self.words):
                     self.timer.stop()
-                    self.feedback_label.setText("🎉 All words completed!")
-                    QTimer.singleShot(2000, self.on_complete)
+                    self.safe_set_text(self.feedback_label, "🎉 All words completed!")
+                    QTimer.singleShot(2000, self.safe_finish)
                     return
                 else:
-                    QTimer.singleShot(1000, lambda: self.is_active and self.feedback_label.setText("Next word. Get ready!"))
-                    QTimer.singleShot(1500, lambda: self.is_active and (self.update_display(), self.reset_flag()))
+                    QTimer.singleShot(1000, lambda: self.safe_set_text(self.feedback_label, "Next word. Get ready!"))
+                    QTimer.singleShot(1500, lambda: (self.update_display(), self.reset_flag()))
             else:
-                QTimer.singleShot(1000, lambda: self.is_active and self.feedback_label.setText("Sign the next letter"))
+                QTimer.singleShot(1000, lambda: self.safe_set_text(self.feedback_label, "Sign the next letter"))
                 QTimer.singleShot(1200, self.reset_flag)
+
             self.update_display()
         elif symbol:
-            self.feedback_label.setText(f"❌ Detected: {symbol}, expected: {target_letter}")
+            self.safe_set_text(self.feedback_label, f"❌ Detected: {symbol}, expected: {target_letter}")
         else:
-            self.feedback_label.setText("❓ No hand detected")
+            self.safe_set_text(self.feedback_label, "❓ No hand detected")
+
+    def safe_set_text(self, label, text):
+        try:
+            if self.is_active:
+                label.setText(text)
+        except RuntimeError:
+            pass  # Avoid crashes if label is deleted
+
+    def safe_finish(self):
+        if self.is_active:
+            self.on_complete()
 
     def reset_flag(self):
         self.correct_detected = False
@@ -138,6 +150,6 @@ class WordSpellingPage(QWidget):
         self.current_letter_index = 0
         self.correct_detected = False
         self.update_display()
-        self.feedback_label.setText("🎉 Welcome to Lesson 2!")
-        QTimer.singleShot(2000, lambda: self.is_active and self.feedback_label.setText("Sign the first letter"))
+        self.safe_set_text(self.feedback_label, "🎉 Welcome to Lesson 2!")
+        QTimer.singleShot(2000, lambda: self.safe_set_text(self.feedback_label, "Sign the first letter"))
         self.timer.start(1000)

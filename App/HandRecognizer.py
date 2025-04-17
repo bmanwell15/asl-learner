@@ -13,7 +13,7 @@ class HandRecognizer:
     def __init__(self):
         self._LABELS_PATH = os.path.join(Constants.BASE_DIRECTORY, "AI Model", "labels.pkl")
         # Load trained model
-        self.model = load_model(Constants.AI_MODEL_PATH)
+        self.model = load_model(Constants.AI_MODEL_PATH, compile=False)
         with open(Constants.AI_MODEL_LABELS_PATH, "rb") as f:
             self.labels = pickleLoad(f)
 
@@ -41,12 +41,15 @@ class HandRecognizer:
     
     def getFrame(self):
         """Returns the frame of the camara in RGB format"""
+        if not self.isCamaraOpen:
+            return None  # Gracefully skip if camera isn't ready
+
         ret, frame = self.camaraCapture.read()
-        if not ret:
-            raise RuntimeError("ret not defined!")
-    
-        frame = cv2.flip(frame, 1) # Frame of the camara
-        rgbFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) # Frame in RGB color format
+        if not ret or frame is None:
+            return None
+
+        frame = cv2.flip(frame, 1)
+        rgbFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         return rgbFrame
     
     def getCurrentHandSymbol(self) -> str:

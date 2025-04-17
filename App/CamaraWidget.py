@@ -27,13 +27,14 @@ class CameraWidget(QWidget):
 
     def updateFrame(self):
         rgbFrame = self.handRecognizer.getFrame()
+        if rgbFrame is None:
+            return  # Skip drawing if no frame
+
         height, width, channel = rgbFrame.shape
         bytesPerLine = channel * width
         qImg = QImage(rgbFrame.data, width, height, bytesPerLine, QImage.Format_RGB888)
 
-        # Resize image to match widget size
         scaled = QPixmap.fromImage(qImg).scaled(
             self.image_label.size(), Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation
         )
-
         self.image_label.setPixmap(scaled)
