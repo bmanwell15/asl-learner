@@ -57,6 +57,7 @@ class ASLLearner(QMainWindow):
             QTimer.singleShot(60, self.camera_widget.updateFrame)
             #self.stack.setCurrentWidget(self.word_lesson)
             self.word_lesson.reset_lesson()
+    
     #Back button
     def go_back(self):
         self.close()

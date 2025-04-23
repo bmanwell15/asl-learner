@@ -178,4 +178,4 @@ class WordSpellingPage(QWidget):
         self.update_display()
         self.safe_set_text(self.feedback_label, "🎉 Welcome to Lesson 2!")
         QTimer.singleShot(2000, lambda: self.safe_set_text(self.feedback_label, "Sign the first letter"))
-        self.timer.start(1000)
+        self.timer.start(500)

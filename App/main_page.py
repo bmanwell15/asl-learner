@@ -109,8 +109,7 @@ class NautilusUI(QWidget):
         if lesson_id == 1:
             btn.clicked.connect(lambda: self.launch_lesson(1))
         elif lesson_id == 2:
-            self.lesson2_button = btn 
-            btn.clicked.connect(lambda: self.launch_lesson(2))
+            self.lesson2_button = btn
 
         btn.setEnabled(enabled)
 
@@ -204,6 +203,7 @@ class NautilusUI(QWidget):
     
     def loadImport(self):
         from MainWindow import ASLLearner
+        print("Libraries loaded....")
 
 
 
