@@ -1,2 +1,2 @@
-lastSeen=2025-04-16
-currentStreak=5
+lastSeen=2025-04-22
+currentStreak=1
