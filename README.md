@@ -1,5 +1,12 @@
 # ASL Learner App
-Using AI models to teach ASL symbols
+Our initial challenge we started with was Advance Personalized Learning. We started off with the idea that there is a lack of engagement within our generation because of technology exposure, which led us to wanting to create something that would help people learn or gain a new skill. There was a lot of jumping back and forth between what we wanted to do, but we felt inspired by the deaf community and loved ones of people with hearing problems. So, that led us to creating something that would allow people to learn ASL. There are lots of people out there that don’t know ASL but have loved ones that are deaf, so we wanted to create something that would encourage them to learn ASL even with the tight schedule they might have. We think this product can help out a lot of people and engage them to strive in order to learn a new language!
+
+The final product we have is an ASL learning app, that uses motion detection in order to confirm or deny if the user is doing the sign correctly. It has unlockable reviews (as you progress through the app) and practice tools that will help engage the user and apply their learning, to further enforce the ideas. Once you get into a lesson, the screen is prompted with a camera which allows the user to see themselves, as well as a graphic of the hand symbol placed over the camera. This allows the user to see themselves and ensure they are doing the right symbol. Once they have lined up their hand with the reflection in the camera, the program checks it as correct and moves onto the next letter. The first lesson consists of the alphabet, then unlocks the second lesson which forces the user to spell out words with the letters they have learned. 
+
+We knew this project would be pretty time consuming, so we hit the ground running pretty early on. Our first prototype is what we have now, but we have worked to perfect it every day.
+
+Our feedback we received was mostly positive. There was feedback we got back that we had already accounted for, such as “what about the inverted camera on right hand/left hand?” which we had already programmed the app to recognize both the left and right hands. There were a couple things our peers suggested we add, such as lesson reminders (similar to Duolingo) or adding live feedback for the user to improve their sign, which are both great ideas. If we continue to further develop this app, we will definitely take these suggestions into account.
+
 
 ## Design 
 <p float="left">
@@ -10,44 +17,6 @@ Using AI models to teach ASL symbols
 ## Setup
 
 ### Installing the Correct Python Version
-The AI Model for this app using Tensorflow and Mediapipe. Because Mediapipe only works for a selected version of python, **this project will use Python Version 3.8.10**. Instead of uninstalling the user's current version of python and downgrading it, we will add the correct version into the project itself.
-
-### About Each Directory and File
-
-- `App/` - Contains all files protaining to the App.
-  - `AI Model/` - Holds all files for the hand recognition AI Model
-    - `asl_model.h5` - Holds the AI Model
-    - `collectData.py` - Run this script to collect the data needed to train the model.
-    - `trainModel.py` - Uses the data produced by `collectData.py` and outputs the `.h5` AI Model code.
-  - `HandRecognizer.py` - A class used to recognize hand signals and return appropriate data.
-  
-- `Documentation/` - Holds all documentation information about the project, including Documents overviewing the structure of the app.
-
-----------
-## Classes
-
-### HandRecognizer
-
-The `HandRecognizer` class preforms operations with the AI model to detct and return what symbols are being presented to the camara
-
-- Location: HandRecognizer.py
-
-#### Attributes:
-- This class has no public attributes
-
-#### Methods:
-- `openCamara() -> None`
-Turns on the camara for the AI Model to view.
-
-- `closeCamara() -> None`
-Turns off the camara.
-
-- `getCurrentHandSymbol() -> str | None`
-Opens the camara if it is not opened already and views what symbol the user is making with their hands. If no *hand* is found, `None` is returned. Otherwise, the symbol detected is returned.
-
-- `waitUntilHandSymbol(symbol: str) -> str`
-Blocks the script until the specified symbol is detected. The method then returns the specified symbol. Be careful in that if the symbol is not something the model was trained on, then the scripted will be blocked forever. There may be a time where we add a timeout functionality to it.
-
-
+The AI Model for this app using Tensorflow and Mediapipe. Because Mediapipe only works for a selected version of python, **this project uses Python Version 3.8.10**. 
 
 ----------
